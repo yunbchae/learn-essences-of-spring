@@ -2,6 +2,7 @@ package moviebuddy;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import moviebuddy.cache.CachingAdvice;
+import moviebuddy.cache.CachingAspect;
 import moviebuddy.data.CachingMovieReader;
 import moviebuddy.data.CsvMovieReader;
 import moviebuddy.domain.MovieReader;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 @PropertySource("/application.properties")
 @ComponentScan(basePackages = { "moviebuddy" })
 @Import({ MovieBuddyFactory.DomainModuleConfig.class, MovieBuddyFactory.DataSourceModuleConfig.class })
+@EnableAspectJAutoProxy
 public class MovieBuddyFactory {
 
     @Bean
@@ -42,6 +44,7 @@ public class MovieBuddyFactory {
         return cacheManager;
     }
 
+    /*
     @Bean
     public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
         return new DefaultAdvisorAutoProxyCreator();
@@ -54,6 +57,12 @@ public class MovieBuddyFactory {
 
         // Advisor = PointCut(대상 선정 알고리즘) + Advice(부가기능)
         return new DefaultPointcutAdvisor(pointcut, advice);
+    }
+    */
+
+    @Bean
+    public CachingAspect cachingAspect(CacheManager cacheManager) {
+        return new CachingAspect(cacheManager);
     }
 
     @Configuration
